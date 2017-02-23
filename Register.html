@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Employee Registration</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="resources/styles/bootstrap.min.css">
+	<script src="resources/scripts/jquery.min.js"></script>
+	<script src="resources/scripts/bootstrap.min.js"></script>
+		
+	<link rel="shortcut icon" href="pics/P.ico"/>
+<style>
+	#info{ 
+		background-color:rgba(200,200,0,1);
+		border-radius:5px;
+		width:500px;
+	 }
+	 body{
+		background-image: url("resources/images/cotton-field.jpg");
+		background-attachment: fixed;
+		background-size: cover; /*auto|length|cover|contain|initial|inherit;*/
+	}
+	
+	#reg_form{
+		background-color: rgba(255,255,255,0.8);
+	}
+	
+	#hfpl_head{
+		background-color: rgba(255,255,255,0.9);
+	}
+</style>
+
+<script>
+function createXMLHttpRequest()
+{
+	if(window.XMLHttpRequest)
+	{ //code for IE7+, firefox, chrome, opera, safari
+		xmlhttp = new XMLHttpRequest();
+	}
+	else
+	{ //code for IE6, IE5
+		xmlhttp = new ActivexObject("Microsoft.XMLHTTP");
+	}
+	return xmlhttp;
+}
+
+function user_name_change()
+{
+	var user_name=document.getElementById('user_name').value;
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+	
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			//alert(xmlhttp.responseText);
+			if(xmlhttp.responseText=="available")
+			{ 
+				document.getElementById('user_name_avail_status').innerHTML="available";
+				document.getElementById('user_name_avail_status').style.background="rgba(50,250,0,0.5)";
+			}
+			else
+			{
+				document.getElementById('user_name_avail_status').innerHTML="Reserved user name. Pls choose alternate";
+				document.getElementById('user_name_avail_status').style.background="rgba(255,50,0,0.5)";
+			}
+		}
+	}
+	
+	xmlhttp.open("GET","RegisterHandle.php?command=is_user_name_exists&new_user=" + user_name,true);
+	xmlhttp.send();
+
+}
+
+function Register_click()
+{
+	document.getElementById('info').innerHTML="";
+	var user_name_avail=document.getElementById('user_name_avail_status').innerHTML;
+	
+	if(user_name_avail!="available")
+	{
+		document.getElementById('info').innerHTML="Registration failed. Check field errors";
+		return;
+	}
+	
+	
+	var user_name=document.getElementById('user_name').value;
+	var pwd=document.getElementById('pwd').value;
+	var pwd2=document.getElementById('pwd2').value;
+	
+	if(user_name=="" || pwd=="" || pwd2=="")
+	{
+		document.getElementById('info').innerHTML="Registration failed. Please fill all the fields";
+		return;
+	}
+	
+	if(pwd!=pwd2)
+	{
+		document.getElementById('info').innerHTML="Registration failed. Passwords mismatch";
+		return;
+	}
+	
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			if(xmlhttp.responseText=="registered")
+			{ //registered successfully
+				document.getElementById('info').innerHTML="Registration Successful. <a href='../hfpl'>click here to login</a>";
+				document.getElementById('user_name').value="";
+				document.getElementById('pwd').value="";
+				document.getElementById('pwd2').value="";
+				document.getElementById('user_name_avail_status').innerHTML="";
+			}
+		}
+	}
+	
+	xmlhttp.open("GET","RegisterHandle.php?command=register&user_name="+user_name+"&pwd="+pwd,true);
+	xmlhttp.send();
+	
+}
+</script>
+</head>
+<body>
+	<div class="jumbotron text-center" id="hfpl_head">	
+		<h1>HFPL <small>Pvt Ltd </small></h1>
+		<h2>User Registration </h2>
+		
+	</div>
+	
+	<div class="container">
+		<div class="row vertical-offset-100">
+			<div class="col-md-4 col-md-offset-4">
+				<div class="panel panel-default"  id="login_form">
+					<div class="panel-heading">
+						<h3 class="panel-title">Register Yourself</h3>
+					</div>
+					<div class="panel-body">
+						<form accept-charset="UTF-8" role="form">
+						<fieldset>
+							<div class="form-group">
+								User Name <input id="user_name" class="form-control" placeholder="Unique user name" onChange="user_name_change()"/> <i id="user_name_avail_status">Enter new one</i> 
+							</div>
+							<div class="form-group">
+								Password <input type="password" id="pwd" class="form-control" placeholder="Password"/>
+							</div>
+							
+							<div class="form-group">
+								Re-Enter Password<input type="password" id="pwd2" class="form-control" placeholder="Password again"/>
+							</div>
+							
+							<input id="btnRegister" type="button" class="btn btn-lg btn-success btn-block" value="Register"/>
+							
+							<p class="text-danger" id="failure_warning">*</p>
+						</fieldset>
+						</form>
+					</div>
+					<div id="info"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+	
+</body>
+</html>

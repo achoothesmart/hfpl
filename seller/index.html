@@ -1,0 +1,73 @@
+<html>
+<head><title>HFPL - Sellers</title>
+<link rel="shortcut icon" href="pics/P.ico"/>
+<style>
+.present{color:green;}
+.absent{color:red;}
+tr:hover{background-color:rgba(250,250,0,0.5);}
+
+</style>
+<script>
+
+function createXMLHttpRequest()
+{
+	if(window.XMLHttpRequest)
+	{ //code for IE7+, firefox, chrome, opera, safari
+		xmlhttp = new XMLHttpRequest();
+	}
+	else
+	{ //code for IE6, IE5
+		xmlhttp = new ActivexObject("Microsoft.XMLHTTP");
+	}
+	return xmlhttp;
+}
+
+function init()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+		
+			//alert(xmlhttp.responseText);
+			document.getElementById('seller_details').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","Details.php",true);
+	xmlhttp.send();
+		
+}
+
+function logout()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+		
+			//alert(xmlhttp.responseText);
+			document.getElementById('seller_details').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","Details.php?command=logout",true);
+	xmlhttp.send();
+		
+}
+
+</script>
+
+</head>
+<body onload="init()">
+	<div id="seller_details"> </div>
+</body>
+</html>

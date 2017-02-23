@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>HFPL - Login </title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="resources/styles/bootstrap.min.css">
+	<script src="resources/scripts/jquery.min.js"></script>
+	<script src="resources/scripts/bootstrap.min.js"></script>
+	
+	<link rel="shortcut icon" href="premier/pics/p.ico">
+<style>
+	li{color:rgba(0,0,153,1);}
+	li:hover{color:rgba(255,45,76,1); cursor:pointer;}
+	.Content{color:rgba(204,51,51,1); 
+		text-shadow:rgba(255,204,0,1); 
+		background-color:rgba(204,255,0,1);
+		height:0px;
+		overflow:hidden;
+		width:600px;
+	}
+	body{
+		background-image: url("resources/images/cotton-field.jpg");
+		background-attachment: fixed;
+		background-size: cover; /*auto|length|cover|contain|initial|inherit;*/
+	}
+	
+	#login_form{
+		background-color: rgba(255,255,255,0.8);
+	}
+	
+	#hfpl_head{
+		background-color: rgba(255,255,255,0.9);
+	}
+}
+</style> 
+
+<script type="text/javascript">
+//----- JQuery --------
+$(function() {
+	$("#btnLogin").click(try_login);
+	
+	$('#pwd').keypress(function(e) {
+		if(e.which == 13) {
+			try_login();
+		}
+	});
+	
+	function try_login(){
+		$.ajax({
+			url: "LoginHandle.php",
+			data: "command=login&user_name="+$('#user_name').val()+"&pwd="+$('#pwd').val(), 
+			type: "GET", 
+			success: function(result){
+				if(result=="login")
+				{ 
+					window.location=("dashboard/");
+				}
+				else
+				{
+					$("#failure_warning").html("Login failed due to invalid username or password");
+					$("#failure_warning").fadeOut(0);
+					$("#failure_warning").fadeIn();
+					$('#pwd').val("");
+				}
+			}
+		}); 
+	}
+});
+</script>
+
+</head>
+<body>
+	<div class="jumbotron text-center" id="hfpl_head">	
+		<h1>HFPL <small>Pvt Ltd </small></h1>
+		Coimbatore
+	</div>
+	
+	<div class="container">
+		<div class="row vertical-offset-100">
+			<div class="col-md-4 col-md-offset-4">
+				<div class="panel panel-default"  id="login_form">
+					<div class="panel-heading">
+						<h3 class="panel-title">Please sign in</h3>
+					</div>
+					<div class="panel-body">
+						<form accept-charset="UTF-8" role="form">
+						<fieldset>
+							<div class="form-group">
+								<input id="user_name" class="form-control" placeholder="User Name" name="email" type="text">
+							</div>
+							<div class="form-group">
+								<input id="pwd" class="form-control" placeholder="Password" name="password" type="password" value="" onKeyPress='pwd_keypress(event)'>
+							</div>
+							
+							<input id="btnLogin" class="btn btn-lg btn-success btn-block" type="button" value="Login">
+							<a href="Register.html" class="btn btn-lg btn-info btn-block" role="button">Register</a>
+							<p class="text-danger" id="failure_warning"></p>
+						</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+<br><br><br>
+</body>
+</html>

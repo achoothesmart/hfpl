@@ -1,0 +1,133 @@
+<html><head><title>HFPL - Add Buyer </title>
+<link rel="shortcut icon" href="premier/pics/p.ico">
+<style>
+	li{color:rgba(0,0,153,1);}
+	li:hover{color:rgba(255,45,76,1); cursor:pointer;}
+	.Content{color:rgba(204,51,51,1); 
+		text-shadow:rgba(255,204,0,1); 
+		background-color:rgba(204,255,0,1);
+		height:0px;
+		overflow:hidden;
+		width:600px;
+	}
+</style> 
+
+<script>
+function createXMLHttpRequest()
+{
+	if(window.XMLHttpRequest)
+	{ //code for IE7+, firefox, chrome, opera, safari
+		xmlhttp = new XMLHttpRequest();
+	}
+	else
+	{ //code for IE6, IE5
+		xmlhttp = new ActivexObject("Microsoft.XMLHTTP");
+	}
+	return xmlhttp;
+}
+
+function pwd_keypress(event)
+{	
+	if(event.keyCode==13)
+	{
+		login_click();
+	}
+}
+
+function init()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			//alert(xmlhttp.responseText);
+			document.getElementById('credential').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","AddBuyerHandle.php?command=load_credential",true);
+	xmlhttp.send();		
+}
+
+function add_buyer_click()
+{
+	var buyer_name=document.getElementById('buyer_name').value;
+	var mobile=document.getElementById('mobile').value;
+	var landline=document.getElementById('landline').value;
+	var fax=document.getElementById('fax').value;
+	var address = escape(document.getElementById('address').value);
+	var email=document.getElementById('email').value;
+	var website=document.getElementById('website').value;
+
+	var xmlhttp=createXMLHttpRequest();
+	var queryString	="&buyer_name="+buyer_name+"&mobile="+mobile+"&landline="+landline;
+	queryString += "&address="+address+"&fax="+fax+"&email="+email+"&website="+website;
+	xmlhttp.open("GET","AddBuyerHandle.php?command=add_buyer"+queryString,true);
+	xmlhttp.send();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			alert(xmlhttp.responseText);
+			if(xmlhttp.responseText=="registered")
+			{ 
+				window.location=("index.html");
+			}
+			else
+			{
+				alert("Registration Failed. Please Try Again");
+			}
+		}
+	}
+
+		
+}
+
+function logout()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{	
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{	
+			//alert(xmlhttp.responseText);
+			document.getElementById('content').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","AddBuyerHandle.php?command=logout",true);
+	xmlhttp.send();
+}
+
+</script>
+</head>
+<body onload="init()">
+<div id="content">
+	<div id="credential" align="right"></div>
+	<form name="LoginForm"  action="" method="get">
+	<table id="logintable">
+		<tr align="center"> <td colspan=2> Enter Buyer Details </td> </tr>
+		<tr> <td>Buyer name</td> <td> <input id="buyer_name" name="buyer_name"/> </td> </tr>
+		<tr> <td>Mobile</td> <td> <input id="mobile" name="mobile"/> </td> </tr>
+		<tr> <td>Landline</td> <td> <input id="landline" name="landline"/> </td> </tr>
+		<tr> <td>Fax</td> <td> <input id="fax" name="fax"/> </td> </tr>
+		<tr> <td>Address</td> <td> <textarea id="address" name="address"></textarea>
+		<tr> <td>Email</td> <td> <input id="email" name="email"/> </td> </tr>
+		<tr> <td>Website</td> <td> <input id="website" name="website"/> </td> </tr>
+		<tr align="center">
+			<td> <input type="reset" name="cancelButt" value="Cancel"/> </td>
+			<td> <input type="button" name="LoginButt" value="Add Buyer" onclick="add_buyer_click()"/> </td>
+		</tr>
+	</table>
+	</form>
+<br><br><br>
+</content>
+</body>
+</html>

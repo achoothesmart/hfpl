@@ -1,0 +1,82 @@
+<html><head><title>HFPL - DashBoard </title>
+<link rel="shortcut icon" href="premier/pics/p.ico">
+<style>
+	li{color:rgba(0,0,153,1);}
+	li:hover{color:rgba(255,45,76,1); cursor:pointer;}
+	.Content{color:rgba(204,51,51,1); 
+		text-shadow:rgba(255,204,0,1); 
+		background-color:rgba(204,255,0,1);
+		height:0px;
+		overflow:hidden;
+		width:600px;
+	}
+</style> 
+
+<script>
+function createXMLHttpRequest()
+{
+	if(window.XMLHttpRequest)
+	{ //code for IE7+, firefox, chrome, opera, safari
+		xmlhttp = new XMLHttpRequest();
+	}
+	else
+	{ //code for IE6, IE5
+		xmlhttp = new ActivexObject("Microsoft.XMLHTTP");
+	}
+	return xmlhttp;
+}
+
+function pwd_keypress(event)
+{	
+	if(event.keyCode==13)
+	{
+		login_click();
+	}
+}
+
+function init()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			//alert(xmlhttp.responseText);
+			document.getElementById('dashboard_content').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","DashboardHandler.php",true);
+	xmlhttp.send();		
+}
+
+function logout()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			//alert(xmlhttp.responseText);
+			document.getElementById('dashboard_content').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","DashboardHandler.php?command=logout",true);
+	xmlhttp.send();
+		
+}
+
+</script>
+</head>
+<body onload="init()">
+	
+	<div id="dashboard_content"> </div>
+			
+</body>
+
+</html>

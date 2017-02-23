@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Add Stock</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../resources/styles/bootstrap.min.css">
+	<script src="../resources/scripts/jquery.min.js"></script>
+	<script src="../resources/scripts/bootstrap.min.js"></script>
+		
+	<link rel="shortcut icon" href="pics/P.ico"/>
+<style>
+	#info{ 
+		background-color:rgba(200,200,0,1);
+		border-radius:5px;
+		width:500px;
+	 }
+	 body{
+		background-image: url("../	resources/images/cotton-field.jpg");
+		background-attachment: fixed;
+		background-size: cover; /*auto|length|cover|contain|initial|inherit;*/
+	}
+	
+	#reg_form{
+		background-color: rgba(255,255,255,0.8);
+	}
+	
+	#hfpl_head{
+		background-color: rgba(255,255,255,0.9);
+	}
+	
+	#p1 input{
+		width:50px;
+	}
+	
+	
+</style>
+
+
+<script type="text/javascript">
+//----- JQuery --------
+$(function() {
+
+	$("#p1_btnCreate").click(function(){
+		// 60(OE)x60(K)/164x63/2 - 120" Satin
+		// WC(yarn)xWFC(yarn)/EPIxPPI/(with no of insertion) - Width of fabric in inches [Weave of fabric]
+		str = $("#p1_warpCount").val() + $("#p1_warpYarn").val() + "x" + $("#p1_weftCount").val() + $("#p1_weftYarn").val() + "/" + $("#p1_EPI").val() + "x" + $("#p1_PPI").val() + "/"
+		str += $("#p1_nInsertions").val() + " - " + $("#p1_width").val() + $("#p1_widthUnit").val() + " " + $("#p1_weave").val()
+		$("#p1_construction").val(str);	
+	});
+	
+	$("#p1_btnInsert").click(function (){
+		$("#construction").val($("#p1_construction").val());
+	});
+	
+	$("#p1_btnClear").click(function(){	
+		$('#p1_form')[0].reset();
+		//$(this).closest('form').find("input[type=text], textarea").val("");
+	});
+	
+	$("#combo_stocktype").change(function (){
+		
+		if($("#combo_stocktype").val() == "cloth")
+		{
+			$("#input_construction").show();
+		}
+		else
+		{
+			$("#input_construction").hide();
+		}
+		
+	});
+
+});
+</script>
+
+</head>
+
+<body>
+	<div class="text-center" id="hfpl_head">	
+		
+		<h2> Add Stock </h2>
+		
+	</div>
+	
+	<div class="container">
+		<div class="row vertical-offset-100">
+			<div class="col-md-4 col-md-offset-4">
+				<div class="panel panel-default"  id="login_form">
+					<div class="panel-heading">
+						<h3 class="panel-title">Enter Stock Purchase Details</h3>
+					</div>
+					<div class="panel-body">
+						<form accept-charset="UTF-8" role="form">
+						<fieldset>
+						
+							<div class="form-group">
+								Stock Type
+								<select  class="form-control" id="combo_stocktype">
+									<option class="form-control" value="cloth">Cloth</option>
+									<option class="form-control" value="others">Others</option>	
+								</select>	
+							</div>
+						
+							<div class="form-group input-group" id="input_construction">
+							   <input type="text" id="construction" class="form-control" placeholder="Construction Name">
+							   <span class="input-group-btn">
+									<button class="btn btn-default" type="button" data-toggle="modal" data-target="#modalNewConstruction">Add New</button>
+							   </span>
+							</div>
+							 
+							<div class="form-group">
+								Bill Numner <input id="bill_number" class="form-control" placeholder="Bill Number"/>
+							</div>
+							
+							<div class="form-group">
+								Seller<input id="seller" class="form-control" placeholder="Seller"/>
+							</div>
+							
+							<input id="btnAddStock" type="button" class="btn btn-lg btn-success btn-block" value="Add to Stock"/>
+							
+							<p class="text-danger" id="failure_warning">*</p>
+						</fieldset>
+						</form>
+					</div>
+					<div id="info"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+
+	<!-- Modal -->
+	<div id="modalNewConstruction" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Create a New Construction</h4>
+		  </div>
+		  <div class="modal-body">
+			
+			<!-- Panel: Insert Quality -->
+			<div id="panel1" >
+				<form id="p1_form">
+					<table id="p1" >
+						<tr> <td>Warp Count</td> <td><input id="p1_warpCount" /></td> 
+							<td>Type of Yarn</td> 
+							<td> 
+								<select id="p1_warpYarn" >
+									<!-- OE, Carded(K), Semi-Combed(SC), Combed(C), Compact(CP), Denier(DN) -->
+									<option value="0"></option> 
+									<option value="(OE)">OE</option> 
+									<option value="(K)">Carded(K)</option> 
+									<option value="(SC)">Semi-Combed(SC)</option> 
+									<option value="(C)">Combed(C)</option> 
+									<option value="(CP)">Compact(CP)</option> 
+									<option value="(DN)">Denier(DN)</option> 
+								</select>
+							</td> 
+						</tr>
+						<tr> <td>Weft Count</td> <td><input id="p1_weftCount" /></td> 
+							<td>Type of Yarn</td> 
+							<td> 
+								<select id="p1_weftYarn" >
+									<!-- OE, Carded(K), Semi-Combed(SC), Combed(C), Compact(CP), Denier(DN) -->
+									<option value="0"></option> 
+									<option value="(OE)">OE</option> 
+									<option value="(K)">Carded(K)</option> 
+									<option value="(SC)">Semi-Combed(SC)</option> 
+									<option value="(C)">Combed(C)</option> 
+									<option value="(CP)">Compact(CP)</option> 
+									<option value="(DN)">Denier(DN)</option> 
+								</select>
+							</td> 
+						</tr>
+								
+						<tr> <td>EPI</td> <td><input id="p1_EPI"/></td> <td>Weave</td> <td><input id="p1_weave" style="width:130px;"/></td> </tr>
+						<tr> <td>PPI</td> <td><input id="p1_PPI"/></td> 
+							<td>Width</td> <td><input id="p1_width"/> 
+							Unit
+								<select id="p1_widthUnit">
+									<option value="0"></option> 
+									<option value="&quot">Inch</option> 
+									<option value="cm">Centimeter</option> 
+									<option value="mt">Meter</option> 
+									<option value="yd">Yard</option> 
+								</select> </td> 
+						</tr>
+						
+						<tr> <td colspan=4> Number of Insertions <input id="p1_nInsertions"> </td> </tr>
+						
+						<tr> <td colspan=4> 
+								
+								 
+							</td> 
+						</tr>
+						
+						<tr> <td colspan=4> <input style="width:300px;" id="p1_construction"></span> </td> </tr>
+						
+					</table>
+				</form>
+			</div>
+			<!-- x -->
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" id="p1_btnClear"> Clear </button>
+			<button type="button" class="btn btn-default" id="p1_btnCreate"> Create Construction </button>
+			<button type="button" class="btn btn-default" id="p1_btnInsert" data-dismiss="modal"> &lt&lt Insert </button>
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+
+	  </div>
+	</div>
+	
+</body>
+</html>

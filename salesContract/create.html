@@ -1,0 +1,277 @@
+<html><head><title>HFPL - Create Sales Contract </title>
+<link rel="shortcut icon" href="premier/pics/p.ico">
+<link rel="stylesheet" href="../Styles/jquery-ui.css"/>
+<script src="../Scripts/jquery-1.8.2.min.js"></script>
+<script src="../Scripts/jquery-ui.min.js"></script>
+<style>
+	li{color:rgba(0,0,153,1);}
+	li:hover{color:rgba(255,45,76,1); cursor:pointer;}
+	.Content{color:rgba(204,51,51,1); 
+		text-shadow:rgba(255,204,0,1); 
+		background-color:rgba(204,255,0,1);
+		height:0px;
+		overflow:hidden;
+		width:600px;
+	}
+	#p1 input{
+		width:50px;
+	}
+
+</style> 
+
+<script>
+function createXMLHttpRequest()
+{
+	if(window.XMLHttpRequest)
+	{ //code for IE7+, firefox, chrome, opera, safari
+		xmlhttp = new XMLHttpRequest();
+	}
+	else
+	{ //code for IE6, IE5
+		xmlhttp = new ActivexObject("Microsoft.XMLHTTP");
+	}
+	return xmlhttp;
+}
+
+function pwd_keypress(event)
+{	
+	if(event.keyCode==13)
+	{
+		login_click();
+	}
+}
+
+function init()
+{
+	xmlhttp.onreadystatechange=function()
+	{
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			//alert(xmlhttp.responseText);
+			document.getElementById('credential').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","CreateSCHandler.php?command=load_credential",true);
+	xmlhttp.send();		
+}
+
+function logout()
+{
+	var xmlhttp=createXMLHttpRequest();
+	
+	xmlhttp.onreadystatechange=function()
+	{	
+		if(xmlhttp.readyState==4 && xmlhttp.status==200)
+		{	
+			//alert(xmlhttp.responseText);
+			document.getElementById('content').innerHTML=xmlhttp.responseText;
+		}
+		
+	}
+	
+	xmlhttp.open("GET","AddBuyerHandle.php?command=logout",true);
+	xmlhttp.send();
+}
+</script>
+
+<script type="text/javascript">
+//----- JQuery --------
+$(function() {
+    
+    //autocomplete
+    $("#buyer").autocomplete({
+        source: "BuyerAutocompleteHandler.php"
+    });
+
+	$("#seller").autocomplete({
+        source: "SellerAutocompleteHandler.php"
+    });	
+
+	$("#p1").hide();
+	$("#panel1").hide();
+	$("#add_buyer_link").hide();
+	$("#add_seller_link").hide();
+	
+	$("#buyer").focus(function(){
+		$("#add_buyer_link").show();
+	});
+	$("#buyer").blur(function(){
+		//$("#add_buyer_link").hide();
+	});
+	$("#seller").focus(function(){
+		$("#add_seller_link").show();
+	});
+	$("#seller").blur(function(){
+		//$("#add_seller_link").hide();
+	});
+	
+	$("#construction").focus(function(){
+		$("#panel1").show();
+	});
+	
+	$("#order_number,#seller,#construction,#order_qty,#supplied_qty,#order_status,#rate,#discount").focus(function(){
+		$("#add_buyer_link").hide();
+	});
+	$("#order_number,#buyer,#construction,#order_qty,#supplied_qty,#order_status,#rate,#discount").focus(function(){
+		$("#add_seller_link").hide();
+	});
+	
+	$("#order_number,#seller,#order_qty,#supplied_qty,#order_status,#rate,#discount").focus(function(){
+		$("#p1").hide();
+		$("#panel1").hide();
+		$("#btn_newConstruction").show();
+	});
+	
+	$("#btn_newConstruction").click(function(){
+		$("#p1").show();
+		$("#btn_newConstruction").hide();
+	});
+	
+	$("#p1_btnHide").click(function(){
+		$("#p1").hide();
+		$("#panel1").hide();
+		$("#btn_newConstruction").show();
+	});
+	
+	
+	
+	$("#p1_btnCreate").click(function(){
+		// 60(OE)x60(K)/164x63/2 - 120" Satin
+		// WC(yarn)xWFC(yarn)/EPIxPPI/(with no of insertion) - Width of fabric in inches [Weave of fabric]
+		str = $("#p1_warpCount").val() + $("#p1_warpYarn").val() + "x" + $("#p1_weftCount").val() + $("#p1_weftYarn").val() + "/" + $("#p1_EPI").val() + "x" + $("#p1_PPI").val() + "/"
+		str += $("#p1_nInsertions").val() + " - " + $("#p1_width").val() + $("#p1_widthUnit").val() + " " + $("#p1_weave").val()
+		$("#p1_construction").val(str);
+	});
+	
+	$("#p1_btnInsert").click(function (){
+		$("#construction").val($("#p1_construction").val());
+	});
+	
+	
+	
+	$("#btnCreate").click(function(){
+		var params = "buyer=" + $("#buyer").val() + "&seller=" + $("#seller").val() + "&order_number=" + $("#order_number").val();
+		params += "&construction=" + $("#construction").val() + "&order_qty=" + $("#order_qty").val() + "&supplied_qty=" + $("#supplied_qty").val();
+		params += "&rate=" + $("#rate").val() + "&discount=" + $("#discount").val() + "&order_status=" + $("#order_status").val();
+		//alert((params.split('&')).join('\n'));
+		$.ajax({
+			url: "CreateSCHandler.php",
+			data: "command=create_sc&"+params, 
+			type: "GET", 
+			success: function(result){
+				$("#msg").html(result);
+			}
+		}); 
+	});
+
+});
+
+</script>
+</head>
+
+
+
+
+
+
+
+
+<body onload="init()">
+<div id="content">
+	<div id="credential" align="right"></div>
+	<form name="LoginForm"  action="" method="get">
+	<h3>Enter Sales Contract Details </h3>
+	<table id="logintable">
+		<tr align="center"> <td colspan=2> </td> 
+			<td rowspan=9 >
+				
+				<!-- Panel: Insert Quality -->
+				<div id="panel1" style="background-color:lightgray; width:500px;">
+					
+					<input type="button" value="Add New Quality Construction" id="btn_newConstruction"/>
+						
+					<table class="panel" id="p1">
+						<tr> <td>Warp Count</td> <td><input id="p1_warpCount"/></td> 
+							<td>Type of Yarn</td> 
+							<td> 
+								<select id="p1_warpYarn">
+									<!-- OE, Carded(K), Semi-Combed(SC), Combed(C), Compact(CP), Denier(DN) -->
+									<option value="0"></option> 
+									<option value="(OE)">OE</option> 
+									<option value="(K)">Carded(K)</option> 
+									<option value="(SC)">Semi-Combed(SC)</option> 
+									<option value="(C)">Combed(C)</option> 
+									<option value="(CP)">Compact(CP)</option> 
+									<option value="(DN)">Denier(DN)</option> 
+								</select>
+							</td> 
+						</tr>
+						<tr> <td>Weft Count</td> <td><input id="p1_weftCount"/></td> 
+							<td>Type of Yarn</td> 
+							<td> 
+								<select id="p1_weftYarn">
+									<!-- OE, Carded(K), Semi-Combed(SC), Combed(C), Compact(CP), Denier(DN) -->
+									<option value="0"></option> 
+									<option value="(OE)">OE</option> 
+									<option value="(K)">Carded(K)</option> 
+									<option value="(SC)">Semi-Combed(SC)</option> 
+									<option value="(C)">Combed(C)</option> 
+									<option value="(CP)">Compact(CP)</option> 
+									<option value="(DN)">Denier(DN)</option> 
+								</select>
+							</td> 
+						</tr>
+								
+						<tr> <td>EPI</td> <td><input id="p1_EPI"/></td> <td>Weave</td> <td><input id="p1_weave" style="width:130px;"/></td> </tr>
+						<tr> <td>PPI</td> <td><input id="p1_PPI"/></td> 
+							<td>Width</td> <td><input id="p1_width"/> 
+							Unit
+								<select id="p1_widthUnit">
+									<option value="0"></option> 
+									<option value="&quot">Inch</option> 
+									<option value="cm">Centimeter</option> 
+									<option value="mt">Meter</option> 
+									<option value="yd">Yard</option> 
+								</select> </td> 
+						</tr>
+						
+						<tr> <td colspan=4> Number of Insertions <input id="p1_nInsertions"> </td> </tr>
+						
+						<tr> <td colspan=4> 
+								<input type="button" id="p1_btnCreate" value="Create Construction" style="width:140px;"/> 
+								<input type="button" id="p1_btnInsert" value="&lt&lt Insert" style="width:70px;"/>
+								<input type="button" id="p1_btnHide" value="Hide"/> 
+							</td> 
+						</tr>
+						
+						<tr> <td colspan=4> <input style="width:300px;" id="p1_construction"></span> </td> </tr>
+						
+					</table>
+						
+				</div>
+				<!-- x -->
+			</td> 
+		</tr>
+		<tr> <td>Order Number</td> 		<td> <input id="order_number" name="order_number"/> </td> 	</tr>
+		<tr> <td>Buyer</td> 			<td> <input id="buyer" name="buyer"/> 	<a id="add_buyer_link" href="../buyer/add.html" target="_blank">Add new Buyer</a>	</td> </tr>
+		<tr> <td>Seller</td> 			<td> <input id="seller" name="seller"/> <a id="add_seller_link" href="../seller/add.html" target="_blank">Add new Seller</a> 	</td> </tr>
+		<tr> <td>Construction</td> 		<td> <input id="construction" name="construction"/> </td> 	</tr>
+		<tr> <td>Order Quantity</td> 	<td> <input id="order_qty" name="order_qty"/> </td>			</tr>
+		<tr> <td>Supplied Quantity</td> <td> <input id="supplied_qty" name="supplied_qty"/> </td> 	</tr>
+		<tr> <td>Rate per Meter</td> 	<td> <input id="rate" name="rate"/> </td> 					</tr>
+		<tr> <td>Discount</td> 			<td> <input id="discount" name="discount"/> </td> 			</tr>
+		<tr> <td>Order Status</td> 		<td> <input id="order_status" name="order_status"/> </td> 	</tr>
+		<tr>
+			<td> <input type="reset" id="btnCancel" value="Cancel"/> </td>
+			<td> <input type="button" id="btnCreate" value="Create"/> </td>
+		</tr>
+	</table>
+	
+	<div id="msg"></div>
+	</form>
+<br><br><br>
+</content>
+</body>
+</html>
